@@ -95,8 +95,12 @@ def test_missing_or_unreadable_local_content_falls_back_to_original_path(
     unreadable.write_bytes(b"secret")
     monkeypatch.setattr(Path, "is_file", lambda self: self == unreadable)
 
+    original_path_open = Path.open
+
     def raise_oserror(self, *args, **kwargs):
-        raise OSError("permission denied")
+        if self == unreadable:
+            raise OSError("permission denied")
+        return original_path_open(self, *args, **kwargs)
 
     monkeypatch.setattr(Path, "open", raise_oserror)
     assert normalise({"type": "image", "image": str(unreadable)})["image"] == str(unreadable)

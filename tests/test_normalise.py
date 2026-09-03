@@ -84,7 +84,9 @@ def test_different_file_bytes_produce_different_digests(tmp_path: Path) -> None:
     assert digest(left_value) != digest(right_value)
 
 
-def test_missing_or_unreadable_local_content_falls_back_to_original_path(monkeypatch, tmp_path: Path) -> None:
+def test_missing_or_unreadable_local_content_falls_back_to_original_path(
+    monkeypatch, tmp_path: Path
+) -> None:
     """A missing or unreadable local content path falls back to the original path value."""
     missing = tmp_path / "missing.bin"
     assert normalise({"type": "image", "image": str(missing)})["image"] == str(missing)
